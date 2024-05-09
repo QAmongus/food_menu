@@ -1,7 +1,6 @@
 import config
 import random
 import time
-import openpyxl
 import pandas as pd
 from prettytable import PrettyTable
 random.seed(int(time.time() * 1000))
@@ -76,7 +75,7 @@ while True:
             table.add_column(day, [breakfast, lunch, dinner])
         print(table)
         rows = [list(row) for row in table._rows]
-        dataframe= pd.DataFrame(rows, columns=table.field_names)
+        dataframe = pd.DataFrame(rows, columns=table.field_names)
         dataframe.to_excel("week_menu.xlsx", index=False, engine="openpyxl")
         print("Создал тебе week_menu.xlsx <3")
     elif what_user_want == "готовим":
