@@ -1,6 +1,9 @@
 import config
 import random
 import time
+import openpyxl
+import pandas as pd
+from prettytable import PrettyTable
 random.seed(int(time.time() * 1000))
 
 
@@ -21,9 +24,9 @@ def chill():
 
 
 while True:
-    print("Введи любой вариант: идем есть/готовим/чиллим")
+    print("Сколько дней планируем? Введи любой вариант: день/неделя/готовим/чиллим")
     what_user_want = input().strip().lower()
-    if what_user_want == "идем есть":
+    if what_user_want == "день":
         breakfast = random.choice(config.for_breakfast)
         lunch = random.choice(config.for_lunch)
         dinner = random.choice(config.for_dinner)
@@ -61,6 +64,21 @@ while True:
                 break
             else:
                 continue
+    elif what_user_want == "неделя":
+        table = PrettyTable()
+        for day in config.day_names:
+            breakfast = random.choice(config.for_breakfast)
+            lunch = random.choice(config.for_lunch)
+            dinner = random.choice(config.for_dinner)
+
+            while dinner == lunch:
+                dinner = random.choice(config.for_dinner)
+            table.add_column(day, [breakfast, lunch, dinner])
+        print(table)
+        rows = [list(row) for row in table._rows]
+        dataframe= pd.DataFrame(rows, columns=table.field_names)
+        dataframe.to_excel("week_menu.xlsx", index=False, engine="openpyxl")
+        print("Создал тебе week_menu.xlsx <3")
     elif what_user_want == "готовим":
         cooking()
     elif what_user_want == "чиллим":
