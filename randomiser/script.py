@@ -1,8 +1,13 @@
+import os
+import time
 import config
 import random
-import time
 import pandas as pd
+from datetime import datetime
 from prettytable import PrettyTable
+from openpyxl import load_workbook
+from openpyxl.utils import get_column_letter
+from signal import signal, alarm, SIGALRM
 random.seed(int(time.time() * 1000))
 
 
@@ -77,7 +82,23 @@ while True:
         rows = [list(row) for row in table._rows]
         dataframe = pd.DataFrame(rows, columns=table.field_names)
         dataframe.to_excel("week_menu.xlsx", index=False, engine="openpyxl")
+
+        workbook = load_workbook("week_menu.xlsx")
+        worksheet = workbook.active
+        for col in worksheet.columns:
+            max_length = max(len(str(cell.value)) for cell in col)
+            column_letter = get_column_letter(col[0].column)
+            worksheet.column_dimensions[column_letter].width = max_length * 1.2
+
+        workbook.save("week_menu.xlsx")
         print("Создал тебе week_menu.xlsx <3")
+        # print("Отправить в телегу?")
+        # user_option = input().strip().lower()
+        # if user_option == "да":
+        #     os.system("telegram-send --file week_menu.xlsx")
+        #     print("Проверь табличку в тг")
+        # else:
+        #     continue
     elif what_user_want == "готовим":
         cooking()
     elif what_user_want == "чиллим":
